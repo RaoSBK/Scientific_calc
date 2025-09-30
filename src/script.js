@@ -1,57 +1,113 @@
 document.addEventListener("DOMContentLoaded", function () {
-    console.log("Document is ready:");
+    console.log("Document is ready: Scientific Calculator Initialized");
+
     const display = document.getElementById('calc-display');
     const buttons = document.getElementsByClassName('btn');
-
     let currentValue = "";
+    
+    const scientificFunctions = ['sin', 'cos', 'tan', 'log', 'ln', '√'];
+
+    
+    display.addEventListener('keydown', function(event) {
+        event.preventDefault();
+    });
+    
+    
+    for (let i = 0; i < buttons.length; i++) {
+        const button = buttons[i];
+        button.addEventListener('click', function () {
+            const value = button.innerText.trim();
+            handleButtonClick(value); 
+        });
+    }
+
+
+    function insertAtCursor(textToInsert) {
+        const cursorPosition = display.selectionStart;
+
+        const textBefore = currentValue.substring(0, cursorPosition);
+        const textAfter = currentValue.substring(cursorPosition);
+
+        currentValue = textBefore + textToInsert + textAfter;
+        display.value = currentValue;
+
+        const newCursorPosition = cursorPosition + textToInsert.length;
+        display.setSelectionRange(newCursorPosition, newCursorPosition);
+        display.focus();
+    }
+
+    function handleButtonClick(value){
+        try {
+            if (value === "AC") {
+                currentValue = "";
+                display.value = currentValue;
+            } else if (value === "<") { 
+                const newPosition = display.selectionStart - 1;
+                if (newPosition >= 0) {
+                    display.setSelectionRange(newPosition, newPosition);
+                    display.focus();
+                }
+            } else if (value === ">") { 
+                const newPosition = display.selectionStart + 1;
+                
+                if (newPosition <= currentValue.length) {
+                    display.setSelectionRange(newPosition, newPosition);
+                    display.focus();
+                }
+            } else if (value === "CE") {
+                currentValue = currentValue.slice(0, -1);
+                display.value = currentValue;
+            } else if (value === "=") {
+                evaluateResult();
+            } else if (scientificFunctions.includes(value)) {
+                handleScientific(value);
+            } else {
+                insertAtCursor(value);
+            }
+        } catch (error) {
+            console.error("Calculation Error:", error);
+            currentValue = "Error";
+            display.value = currentValue;
+        }
+    }
+
+
+
+    function handleScientific(funcName){
+        const textToInsert = funcName + '()';
+        const cursorPosition = display.selectionStart;
+
+        const textBefore = currentValue.substring(0, cursorPosition);
+        const textAfter = currentValue.substring(cursorPosition);
+
+        currentValue = textBefore + textToInsert + textAfter;
+        display.value = currentValue;
+
+        const newCursorPosition = cursorPosition + textToInsert.length - 1;
+        display.setSelectionRange(newCursorPosition, newCursorPosition);
+        display.focus();
+    }
 
     function evaluateResult() {
-        console.log('currentValue:', currentValue)
         const convertedValue = currentValue
-            .replace("×", "*")
-            .replace("÷", "/")
-            .replace('%', "*0.01")
-            .replace('sin', 'Math.sin')
-            .replace('cos', 'Math.cos')
-            .replace('tan', 'Math.tan')
-            .replace('ln', 'Math.log')
-            .replace('π', 'Math.PI')
-            .replace('log', 'Math.log10')
-            .replace('e', 'Math.E')
-            .replace('√', 'Math.sqrt')
-            .replace('CE', 'delete')
-            .replace('CE', 'delete');
-        console.log('currentValue:', convertedValue)
+            .replace(/×/g, "*")
+            .replace(/÷/g, "/")
+            .replace(/%/g, "/100")
+            .replace(/π/g, 'Math.PI')
+            .replace(/e/g, 'Math.E')
+            .replace(/sin/g, 'Math.sin')
+            .replace(/cos/g, 'Math.cos')
+            .replace(/tan/g, 'Math.tan')
+            .replace(/log/g, 'Math.log10')
+            .replace(/ln/g, 'Math.log')
+            .replace(/√/g, 'Math.sqrt');
+        
+        
+        if(convertedValue.includes('^')){
+        }
+
         const result = eval(convertedValue);
         currentValue = result.toString();
         display.value = currentValue;
     }
-    for (let i = 0; i < buttons.length; i++) {
-        const button = buttons[i];
-        button.addEventListener('click', function () {
-            const value = button.innerText;
-
-            try {
-                if (value == "AC") {
-                    currentValue = "";
-                    display.value = currentValue;
-                } else if (value == "CE") {
-                    currentValue = currentValue.slice(0, -1);
-                    display.value = currentValue;
-                } else if (value == "=") {
-                    evaluateResult();
-                } else {
-                    currentValue += value;
-                    display.value = currentValue;
-                }
-            } catch (error) {
-                console.error(error);
-                currentValue = "ERROR";
-                display.value = currentValue;
-            }
-
-
-        })
-    }
-
 });
