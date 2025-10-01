@@ -29,7 +29,7 @@ document.addEventListener("DOMContentLoaded", function () {
     for (let i = 0; i < buttons.length; i++) {
         const button = buttons[i];
         button.addEventListener('click', function () {
-            const value = button.innerText.trim();
+            const value = button.dataset.value || button.innerText.trim();
             handleButtonClick(value); 
         });
     }
@@ -47,6 +47,23 @@ document.addEventListener("DOMContentLoaded", function () {
         const newCursorPosition = cursorPosition + textToInsert.length;
         display.setSelectionRange(newCursorPosition, newCursorPosition);
         display.focus();
+    }
+
+    function factorial(num){
+        let n= parseFloat(num);
+        if(n<0 || !Number.isInteger(n)){
+            return "ERROR";
+        }
+
+        if(n===0){
+            return 1;
+        }
+
+        let result = 1;
+        for(let i=n; i>0; i--){
+            result *= i;
+        }
+        return result;
     }
 
     function handleButtonClick(value){
@@ -74,7 +91,17 @@ document.addEventListener("DOMContentLoaded", function () {
                 evaluateResult();
             } else if (scientificFunctions.includes(value)) {
                 handleScientific(value);
-            } else {
+            } else if(value === "X y" || value === "Xy"){
+                insertAtCursor('^');
+            } else if(value ==="X!"){
+                const match = currentValue.match(/(\d+(\.\d+)?)$/);
+                if (match){
+                    const lastNumber = match[0];
+                    const result = factorial(lastNumber);
+                    currentValue = currentValue.substring(0, currentValue.length - lastNumber.length)+ result;
+                    display.value = currentValue;
+                }
+            }  else {
                 insertAtCursor(value);
             }
         } catch (error) {
@@ -113,7 +140,8 @@ document.addEventListener("DOMContentLoaded", function () {
             .replace(/tan/g, 'Math.tan')
             .replace(/log/g, 'Math.log10')
             .replace(/ln/g, 'Math.log')
-            .replace(/√/g, 'Math.sqrt');
+            .replace(/√/g, 'Math.sqrt')
+            .replace(/\^/g, '**');
         
         
         if(convertedValue.includes('^')){
