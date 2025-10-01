@@ -8,9 +8,8 @@ document.addEventListener("DOMContentLoaded", function () {
     const scientificFunctions = ['sin', 'cos', 'tan', 'log', 'ln', '√'];
 
     
-    display.addEventListener('keydown', function(event) {
-        event.preventDefault();
-    });
+    
+
     
     
     for (let i = 0; i < buttons.length; i++) {
