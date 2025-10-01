@@ -8,7 +8,21 @@ document.addEventListener("DOMContentLoaded", function () {
     const scientificFunctions = ['sin', 'cos', 'tan', 'log', 'ln', '√'];
 
     
-    
+    display.addEventListener('keydown', function(event) {
+        const key = event.key;
+        event.preventDefault();
+        const allowedEditingKeys = ['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab'];
+        if(allowedEditingKeys.includes(key)){
+            return;
+        }
+
+        if('0123456789.' .includes(key)){
+            event.preventDefault();
+            insertAtCursor(key);
+        } else {
+            event.preventDefault();
+        }
+    });
 
     
     
