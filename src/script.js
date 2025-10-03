@@ -134,7 +134,11 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function evaluateResult() {
-        const convertedValue = currentValue
+        let processedValue = currentValue;
+        processedValue = processedValue.replace(/(\d+(\.\d+)?)\s*([+\-])\s*(\d+(\.\d+)?)\s*%/g, (match, base, _, op, percent) => {
+        return `${base} ${op} (${base} * ${percent} / 100)`;
+        });
+        const convertedValue = processedValue
             .replace(/×/g, "*")
             .replace(/÷/g, "/")
             .replace(/%/g, "/100")
