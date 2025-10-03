@@ -3,13 +3,20 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const display = document.getElementById('calc-display');
     const buttons = document.getElementsByClassName('btn');
+    const historyBtn = document.getElementById('history-btn');
+    const historyPanel = document.getElementById('histroy-panel')
     let currentValue = "";
     let lastAnswer = 0;
+    let history = [];
     let justEvaluated = false;
+    
     
     const scientificFunctions = ['sin', 'cos', 'tan', 'log', 'ln', '√'];
 
-    
+    display.addEventListener('input', function() {
+        currentValue = display.value;
+    });
+
     display.addEventListener('keydown', function(event) {
         const key = event.key;
         event.preventDefault();
@@ -50,6 +57,31 @@ document.addEventListener("DOMContentLoaded", function () {
         display.setSelectionRange(newCursorPosition, newCursorPosition);
         display.focus();
     }
+
+
+    historyBtn.addEventListener('click', function(){
+        historyPanel.innerHTML = "";
+
+        for(let i= history.length -1; i>= 0;  i--){
+            const entry = document.createElement('div');
+            entry.textContent = history[i];
+
+            entry.addEventListener('click', function(){
+                const result = history[i].split('=')[1];
+                currentValue = result;
+                display.vlaue = currentValue;
+                historyPanel.classList.remove('show');
+            });
+            historyPanel.appendChild(entry);
+        }
+            historyPanel.classList.toggle('show');
+    });
+
+    window.addEventListener('click', function(event){
+        if(!historyPanel.contains(event.target) && event.target !== historyBtn){
+            historyPanel.classList.remove('show');
+        }
+    });
 
     function factorial(num){
         let n= parseFloat(num);
@@ -177,5 +209,6 @@ document.addEventListener("DOMContentLoaded", function () {
         currentValue = result.toString();
         display.value = currentValue;
         justEvaluated = true;
-    }
+        history.push('${expression} = ${result}')
+    };
 });

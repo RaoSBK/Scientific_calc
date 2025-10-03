@@ -1,0 +1,46 @@
+
+.card .btn{
+    height: 50px;
+    font-size: 1.4em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+            
+    padding: 0;
+}
+        
+.card .btn-operator {
+    font-size: 1.5em;
+    padding: 0.2rem 0.5rem;
+    line-height: 1.2;
+}
+
+.display-container {
+    position: relative;
+}
+
+#history-btn {
+    position: absolute;
+    top: 50%; 
+    left: 10px; 
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    font-size: 1.5rem; 
+    cursor: pointer;
+    color: #6c757d;
+}
+#history-panel div {
+    padding: 0px 12px ;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+}
+
+#history-panel.show {
+    display: block;
+}
+
+#history_panel div:hover {
+    background-color: #f8f9fa;
+}
+        
