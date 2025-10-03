@@ -5,6 +5,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const buttons = document.getElementsByClassName('btn');
     let currentValue = "";
     let lastAnswer = 0;
+    let justEvaluated = false;
     
     const scientificFunctions = ['sin', 'cos', 'tan', 'log', 'ln', '√'];
 
@@ -68,6 +69,11 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function handleButtonClick(value){
+        if(justEvaluated){
+            if("0123456789".includes(value) || scientificFunctions.includes(value)) {
+            currentValue = "";
+            } justEvaluated = false;
+        }
         try {
             if (value === "AC") {
                 currentValue = "";
@@ -86,8 +92,18 @@ document.addEventListener("DOMContentLoaded", function () {
                     display.focus();
                 }
             } else if (value === "CE") {
-                currentValue = currentValue.slice(0, -1);
-                display.value = currentValue;
+                const cursorPosition = display.selectionStart;
+
+                if(cursorPosition > 0){
+                    const textBefore = currentValue.substring(0, cursorPosition -1);
+                    const textAfter = currentValue.substring(cursorPosition);
+                    currentValue = textBefore + textAfter;
+                    display.value = currentValue
+
+                    const newCursorPosition = cursorPosition -1;
+                    display.setSelectionRange(newCursorPosition, newCursorPosition);
+                    display.focus();
+                }
             } else if (value === "=") {
                 evaluateResult();
             } else if (scientificFunctions.includes(value)) {
@@ -127,7 +143,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
         currentValue = textBefore + textToInsert + textAfter;
         display.value = currentValue;
-
         const newCursorPosition = cursorPosition + textToInsert.length - 1;
         display.setSelectionRange(newCursorPosition, newCursorPosition);
         display.focus();
@@ -161,5 +176,6 @@ document.addEventListener("DOMContentLoaded", function () {
         lastAnswer = result;
         currentValue = result.toString();
         display.value = currentValue;
+        justEvaluated = true;
     }
 });
