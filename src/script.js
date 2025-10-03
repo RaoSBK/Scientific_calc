@@ -4,6 +4,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const display = document.getElementById('calc-display');
     const buttons = document.getElementsByClassName('btn');
     let currentValue = "";
+    let lastAnswer = 0;
     
     const scientificFunctions = ['sin', 'cos', 'tan', 'log', 'ln', '√'];
 
@@ -101,7 +102,11 @@ document.addEventListener("DOMContentLoaded", function () {
                     currentValue = currentValue.substring(0, currentValue.length - lastNumber.length)+ result;
                     display.value = currentValue;
                 }
-            }  else {
+            } else if(value === "Ans"){
+                insertAtCursor('Ans');
+            } else if(value === "EXP"){
+                insertAtCursor('E');
+            } else {
                 insertAtCursor(value);
             }
         } catch (error) {
@@ -141,6 +146,7 @@ document.addEventListener("DOMContentLoaded", function () {
             .replace(/log/g, 'Math.log10')
             .replace(/ln/g, 'Math.log')
             .replace(/√/g, 'Math.sqrt')
+            .replace(/Ans/g, lastAnswer)
             .replace(/\^/g, '**');
         
         
@@ -148,6 +154,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         const result = eval(convertedValue);
+        lastAnswer = result;
         currentValue = result.toString();
         display.value = currentValue;
     }
